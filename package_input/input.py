@@ -1,16 +1,4 @@
-def validate_number(numero, num_max, num_min):
-    if numero>num_max or numero<num_min :
-        retorno= False
-    else:
-        retorno= True
-    return retorno
-
-def validate_legnt(longitud:int,texto:str):
-    if len(texto)==longitud:
-        retorno= True
-    else:
-        retorno= False
-    return retorno
+from .validate import*
 def get_int(mensaje: str, mensaje_error: str, num_max: int, num_min: int, cantidad_intentos: int,operacion):
     contador = 0 
     retorno = ""
@@ -106,13 +94,11 @@ def get_float(mensaje: str, mensaje_error: str, num_max: int, num_min: int, cant
     retorno = ""
     bandera = True
     pido_numero = (input(mensaje))
-    valido_str= pido_numero
-    validacion=""
-   
+    valido_float= pido_numero.count(".")
+    validacion=validate(valido_float,pido_numero)   
 
     while bandera:
-      
-        if valido_str==True:
+        if validacion:
             pido_numero=float(pido_numero)
             validacion = validate_number(pido_numero, num_max, num_min)
             if validacion==False:
@@ -129,8 +115,10 @@ def get_float(mensaje: str, mensaje_error: str, num_max: int, num_min: int, cant
 
         else:
             pido_numero = (input(mensaje_error))
-            valido_str= pido_numero
             contador+=1
+            valido_float= pido_numero.count(".")
+            validacion=validate(valido_float,pido_numero)
+            
         
         if contador == cantidad_intentos:
             retorno = None
