@@ -13,7 +13,7 @@ def validate_legnt(longitud:int,texto:str):
     return retorno
 def validate(valido_float,numero):
     retorno=""
-    if  valido_float == 1 : 
+    if  valido_float >=0 : 
         
         comprueno= numero.replace(".","")
         valido_str= comprueno.isdigit()

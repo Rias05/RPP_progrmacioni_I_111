@@ -1,5 +1,5 @@
 from package_input.input import *
-peso = get_float("ingrese su peso","error, ingrese nuevamnete su peso",300,10,5)
+# peso = get_float("ingrese su peso","error, ingrese nuevamnete su peso",300,10,5)
 
 def sangre():
     grupos_sanguineos = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"]
@@ -137,11 +137,11 @@ def ordenar_lista(lista:list[dict], valor:str, ascendente:bool):
 
 def ordenar_lista_dato(lista_empleados:list[dict], forma:str, dato_ordenar:str):
     if forma == "ascendente":
-        lista_ordenada = ordenar_lista(lista_empleados, dato_ordenar, True)
+        lista_empleados = ordenar_lista(lista_empleados, dato_ordenar, True)
     elif forma == "descendente":
-        lista_ordenada = ordenar_lista(lista_empleados, dato_ordenar, False)
+        lista_empleados = ordenar_lista(lista_empleados, dato_ordenar, False)
 
-    return lista_ordenada
+    return lista_empleados
 
 def buscar_paciente_dni(lista:list,dni:int):
     '''
@@ -166,3 +166,105 @@ def calcular_salario_promedio(lista_empleados:list[dict]):
             contador+=1
         promedio = acumulador_salarios/ contador
         return promedio
+import json
+import re
+def generar_csv_pacientes(path:str, lista:list):
+    with open(path, "w", encoding="utf8") as archivo:
+        # Escribir datos de los pacientes
+        for paciente in lista:
+            linea = f"{paciente['nombre']},{paciente['apellido']},{paciente['edad']},{paciente['altura']},{paciente['dni']},{paciente['peso']},{paciente['grupo sanguineo']},{paciente['id']}\n"
+            archivo.write(linea)
+def parser_csv_pacientes(path:str)-> list:
+    lista = []
+    with open(path, "r", encoding="utf8") as archivo:
+        for linea in archivo:
+            registro = re.split(",|\n",linea)  # Dividir la línea en los datos del paciente
+            diccionario={}
+            diccionario["nombre"]=registro[0]
+            diccionario["apellido"]= registro[1]
+            diccionario["edad"]= int(registro[2])
+            diccionario["altura"]=int(registro[3])
+            diccionario["dni"]= int(registro[4])
+            diccionario["peso"]=float (registro[5])
+            diccionario["grupo sanguineo"] = (registro[6])
+            diccionario["id"] = int(registro[7])
+            lista.append(diccionario)
+        
+    return lista
+
+def generar_json(path: str, lista: list):
+    # Abre el archivo especificado por la ruta en modo escritura ("w"),
+    # utilizando la codificación UTF-8 para manejar caracteres especiales.
+    with open(path, "w", encoding="utf8") as archivo:
+        # Esta línea escribe el contenido de la lista en formato JSON en el archivo,
+        # utilizando una sangría de 4 espacios para una mejor legibilidad.
+        json.dump(lista, archivo, indent=4)
+def actualizar_id(lista:list):
+    lista_id=[1]
+    for empleado in lista:
+        lista_id.append(int(empleado["Id"]))
+
+    # for i in lista_eliminados:
+    #     lista_id.append(int(i["Id"]))
+    # sacamos el ultimo id
+    for i in lista_id:
+        pass
+    guardo = i
+    return guardo
+# def mostrar_tabla(puede_donanr,puede_recibir):
+#      for i in puede_donar:
+
+def mostrar_todos(lista_empleados,puede_dar,puede_recibir):
+    # Encabezado de la tabla
+    encabezado = ["tipo sangre", "puede donar", "puede recibir de"]
+    print("-------------------------------------------------------")
+    print("| {:<10} | {:<10} | {:<15} |  |".format(*encabezado))
+    for i in puede_dar:
+
+    # Imprimir datos de cada empleado
+    # for empleado in lista_empleados:
+        # print("| {:<10} | {:<10} | {:<15} | ${:<9} |".format(empleado["Nombre"], empleado["Apellido"], empleado["Puesto"], empleado["Salario"]))
+
+    # Separador final
+        pass
+
+def determinar_compatibilidad(lista:list):
+    pido_dni = get_int("ingrese su dni","error ingrese nuevamente el dni:",99999999,40000000,5,True)
+    for i in lista:
+        if pido_dni == i["dni"]:
+            paciente = i
+            puede_donar_a=[]
+            puede_recibir=[]
+            su_grupo_sanguineo=paciente["grupo sanguineo"]
+            print("paciente encontrado")
+            if paciente["grupo sanguineo"]=="A+":
+                puede_donar_a=["A+","B+"]
+
+                puede_recibir=["O+","O","-A","+A"]
+            elif su_grupo_sanguineo=="A-":
+                    puede_donar_a=["A+","A-","AB+","AB-"]
+                    puede_recibir =["0-","A-"]
+            elif su_grupo_sanguineo=="B+":
+                    puede_donar_a=["B+","AB+"]
+                    puede_recibir=["O+","O-","B+","B-"]
+            elif su_grupo_sanguineo=="B-":
+                    puede_donar_a=["B+","B-","AB+","AB-"]
+                    puede_recibir=["O-","B-"]
+            elif su_grupo_sanguineo=="AB+":
+                    puede_donar_a=["AB+"]
+                    puede_recibir=["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"]
+            elif su_grupo_sanguineo =="AB-":
+                    puede_donar_a=["AB+","AB-"]
+                    puede_recibir=["O-","A+","B+","AB+"]
+            puede_donar_a_str=",".join(puede_donar_a)
+            puede_recibir_str=",".join(puede_recibir)
+        encabezado = ["tipo sangre", "puede donar", "puede recibir de"]
+        print("-------------------------------------------------------")
+        print("| {:<10} | {:<10} | {:<15} |  |".format(*encabezado))
+        print(f"{su_grupo_sanguineo:<15}|{puede_donar_a_str:<10}|{puede_recibir_str:<14}")
+    
+
+# lista_pacientes = parser_csv_pacientes("pacientes.csv")
+
+# determinar_compatibilidad(lista_pacientes)
+
